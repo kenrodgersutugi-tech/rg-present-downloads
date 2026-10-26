@@ -141,6 +141,31 @@
         max-width: 38rem;
       }
 
+
+      /* Which build this is: quieter than the lede, but impossible to miss. */
+      .lede.note {
+        font-size: 15px;
+        color: var(--muted);
+        border-left: 2px solid var(--accent);
+        padding-left: 14px;
+        margin-bottom: 28px;
+      }
+
+      .lede.note strong {
+        color: var(--secondary);
+      }
+
+      .lede.note a {
+        color: var(--accent-text);
+      }
+
+      /* Before the first release there is nothing to download, and the button
+         must say so rather than sending a church to a 404. */
+      .download.unavailable {
+        background: var(--raised);
+        color: var(--muted);
+        pointer-events: none;
+      }
       .download {
         display: inline-flex;
         align-items: center;
@@ -317,6 +342,12 @@
           RG-Present shows song words, scripture and slides on your projector during a live
           service. It works offline, starts fast, and keeps your congregation looking at the
           slide — never at your desktop.
+        </p>
+        <p class="lede note">
+          This is the build made by <strong>RG Devs</strong>, published from this page and nowhere
+          else. Looking for the other one? The
+          <a href="https://kenrodgersutugi-tech.github.io/rg-present-releases/">RG DEV Industries build</a>, which comes with 3,648 hymns and the King James
+          Version already in it, is published separately.
         </p>
 
         <a class="download" id="download" href="#" rel="noopener">
@@ -583,9 +614,19 @@
         }
 
         function fallback() {
-          meta.textContent = FALLBACK_VERSION
-            ? describe(FALLBACK_VERSION, null)
-            : 'Latest version for Windows 10/11, 64-bit.'
+          if (FALLBACK_VERSION) {
+            meta.textContent = describe(FALLBACK_VERSION, null)
+            return
+          }
+          // Nothing has been published yet, or GitHub could not be reached. Either
+          // way the installer link would 404, so the button says so instead.
+          var button = document.getElementById('download')
+          button.classList.add('unavailable')
+          button.setAttribute('aria-disabled', 'true')
+          button.removeAttribute('href')
+          button.lastChild.textContent = ' Not yet available'
+          meta.textContent =
+            'The first build has not been published yet. This page will offer the installer as soon as it is.'
         }
 
         // `releases/latest` excludes drafts and pre-releases, which is exactly
