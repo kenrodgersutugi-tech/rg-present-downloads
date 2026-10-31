@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en-GB" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RG-Present — privacy policy</title>
+    <meta
+      name="description"
+      content="What RG-Present does with your information: no accounts, no tracking, no analytics. Your songs, services and settings stay on your computer."
+    />
+    <link rel="icon" href="assets/icon-256.png" />
+    <meta name="theme-color" content="#0b0f14" />
+
+    <style>
+      @font-face {
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('assets/inter-subset.woff2') format('woff2');
+      }
+
+      :root {
+        --base: #0b0f14;
+        --panel: #121924;
+        --subtle: #222c3a;
+        --primary: #e9eef5;
+        --secondary: #aab6c6;
+        --muted: #8996a8;
+        --accent-text: #8f76ff;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--base);
+        color: var(--primary);
+        font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+        font-size: 16px;
+        line-height: 1.65;
+      }
+
+      .wrap {
+        max-width: 44rem;
+        margin: 0 auto;
+        padding: 48px 24px 72px;
+      }
+
+      a {
+        color: var(--accent-text);
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 40px;
+      }
+
+      header img {
+        width: 28px;
+        height: 28px;
+      }
+
+      header span {
+        font-weight: 600;
+      }
+
+      h1 {
+        font-size: clamp(26px, 5vw, 34px);
+        line-height: 1.2;
+        margin: 0 0 8px;
+      }
+
+      .updated {
+        color: var(--muted);
+        font-size: 14px;
+        margin: 0 0 32px;
+      }
+
+      h2 {
+        font-size: 19px;
+        margin: 36px 0 8px;
+      }
+
+      p,
+      li {
+        color: var(--secondary);
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .lead {
+        font-size: 18px;
+        color: var(--primary);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 8px;
+        font-size: 15px;
+      }
+
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--subtle);
+        color: var(--secondary);
+      }
+
+      th {
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      footer {
+        margin-top: 56px;
+        padding-top: 16px;
+        border-top: 1px solid var(--subtle);
+        color: var(--muted);
+        font-size: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 24px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header>
+        <img src="assets/icon-256.png" alt="" />
+        <span>RG-Present</span>
+      </header>
+
+      <h1>Privacy policy</h1>
+      <p class="updated">Last updated 31 October 2026</p>
+
+      <p class="lead">
+        RG-Present has no accounts, no tracking and no analytics. Your songs, your services and your
+        settings stay on your computer. We cannot see what your church sings, reads or shows.
+      </p>
+
+      <h2>What stays on your computer</h2>
+      <p>
+        Everything you put into RG-Present is held on the machine it is installed on, and is never
+        sent anywhere:
+      </p>
+      <ul>
+        <li>songs, the service order, themes, media and settings;</li>
+        <li>Bible translations, whether the ones included or ones your church imports;</li>
+        <li>
+          a log file, written so a fault can be explained if you ask for help. It stays on the
+          machine. Nothing sends it to us; if you want us to see it, you send it yourself.
+        </li>
+      </ul>
+      <p>
+        Removing RG-Present leaves this data in place so an upgrade does not lose your library.
+        Deleting the data folder removes it for good.
+      </p>
+
+      <h2>When RG-Present uses the internet</h2>
+      <p>
+        Everything except the three things below works with no internet at all, and an unreachable
+        server never interrupts a service.
+      </p>
+
+      <table>
+        <tr>
+          <th>What</th>
+          <th>What leaves the computer</th>
+          <th>Who receives it</th>
+        </tr>
+        <tr>
+          <td>Activating a licence</td>
+          <td>
+            The licence key you type, the version of the program, and a one-way fingerprint of the
+            computer: a SHA-256 hash, which identifies the machine to us across reinstalls but
+            cannot be turned back into its name, its address or anything about it. No name, no email
+            address, no location.
+          </td>
+          <td>Our licence service, over HTTPS</td>
+        </tr>
+        <tr>
+          <td>Checking for a new version</td>
+          <td>
+            Nothing of yours. The program asks GitHub what the newest release is, the way any web
+            page asks for a file. In the Microsoft Store version this does not happen at all: the
+            Store does the updating.
+          </td>
+          <td>GitHub</td>
+        </tr>
+        <tr>
+          <td>The built-in web browser</td>
+          <td>
+            Whatever you type into it, in the ordinary way of a browser. Cookies and history from it
+            are kept on your computer, apart from the rest of the program, and are not read by
+            RG-Present or sent to us.
+          </td>
+          <td>The sites you visit, and DuckDuckGo if you search</td>
+        </tr>
+      </table>
+
+      <h2>What we do not do</h2>
+      <ul>
+        <li>No analytics, no telemetry, no usage statistics, no crash reporting.</li>
+        <li>No advertising, and nothing sold or passed to anybody else. Ever.</li>
+        <li>No accounts to create, and no personal details asked for.</li>
+        <li>No access to your camera, microphone or location. The browser refuses those requests.</li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>
+        RG-Present is used in churches, where children are often in the room and sometimes at the
+        desk. It collects nothing from anybody, of any age.
+      </p>
+
+      <h2>Keeping the licence record</h2>
+      <p>
+        The licence service keeps the licence key, the machine fingerprint and the dates of
+        activation, so that a licence can be used on the number of machines it was bought for. That
+        record is kept while the licence is live and deleted when it ends. Ask us and we will tell
+        you what is held for your licence, or delete it.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        If this policy changes, the date at the top changes with it and the new version appears on
+        this page.
+      </p>
+
+      <h2>Asking us about it</h2>
+      <p>
+        Write to <a id="contact" href="mailto:rgdev.ke@gmail.com">rgdev.ke@gmail.com</a>. RG-Present
+        is made by RG Devs in Kenya.
+      </p>
+
+      <footer>
+        <a href="./">Download RG-Present</a>
+        <span>© RG Devs</span>
+      </footer>
+    </div>
+  </body>
+</html>
