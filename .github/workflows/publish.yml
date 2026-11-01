@@ -32,14 +32,47 @@ jobs:
         run: |
           set -euo pipefail
 
-          if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
-            echo "::error::There is no release tagged $TAG in $REPO."
+          # A tag can carry more than one draft: electron-builder makes one and
+          # a later upload can make another, so the installer and the blockmap
+          # end up in different drafts. Gather them into one before publishing.
+          ids="$(gh api "repos/$REPO/releases" --paginate \
+            --jq "[.[] | select(.tag_name == \"$TAG\" and .draft)] | sort_by(.created_at) | .[].id")"
+          if [ -z "$ids" ]; then
+            echo "::error::There is no draft tagged $TAG in $REPO."
             exit 1
           fi
 
+          keeper=''
+          for id in $ids; do
+            if gh api "repos/$REPO/releases/$id" --jq '[.assets[].name] | join(" ")' | grep -q 'RG-Present-Setup.exe'; then
+              keeper="$id"
+              break
+            fi
+          done
+          if [ -z "$keeper" ]; then
+            echo "::error::No draft of $TAG carries RG-Present-Setup.exe."
+            exit 1
+          fi
+          echo "Keeping release $keeper"
+
+          mkdir -p moved
+          for id in $ids; do
+            [ "$id" = "$keeper" ] && continue
+            echo "Folding release $id into $keeper"
+            gh api "repos/$REPO/releases/$id" --jq '.assets[] | "\(.id) \(.name)"' | while read -r asset_id name; do
+              gh api -H 'Accept: application/octet-stream' "repos/$REPO/releases/assets/$asset_id" > "moved/$name"
+              gh api --method POST -H 'Content-Type: application/octet-stream' \
+                "https://uploads.github.com/repos/$REPO/releases/$keeper/assets?name=$name" \
+                --input "moved/$name" >/dev/null
+              echo "  moved $name"
+            done
+            gh api --method DELETE "repos/$REPO/releases/$id"
+            echo "  deleted the empty draft $id"
+          done
+
           # A church downloads the fixed name, and the updater reads latest.yml.
           # Publishing without either would leave the page pointing at nothing.
-          assets="$(gh release view "$TAG" --repo "$REPO" --json assets --jq '[.assets[].name] | join(" ")')"
+          assets="$(gh api "repos/$REPO/releases/$keeper" --jq '[.assets[].name] | join(" ")')"
           echo "Assets: $assets"
           for required in RG-Present-Setup.exe latest.yml; do
             case " $assets " in
@@ -51,7 +84,7 @@ jobs:
             esac
           done
 
-          gh release edit "$TAG" --repo "$REPO" --draft=false --latest
+          gh api --method PATCH "repos/$REPO/releases/$keeper" -F draft=false -F make_latest=true >/dev/null
           echo "Published $TAG" >> "$GITHUB_STEP_SUMMARY"
           echo "https://kenrodgersutugi-tech.github.io/rg-present-downloads/" >> "$GITHUB_STEP_SUMMARY"
 
