@@ -1,0 +1,66 @@
+# Makes a draft release public.
+#
+# The release pipeline in the rg-present repository always creates a DRAFT, so a
+# human can install the build before any church can reach it. This is that last
+# step, as a button rather than a hunt through the releases page: it flips the
+# draft to published and marks it latest, which is what the download page and
+# the updater both read.
+#
+# Actions -> Publish a release -> Run workflow, with the tag.
+name: Publish a release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag of the draft to publish, e.g. v1.0.0'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          if ! gh release view "$TAG" --repo "$REPO" >/dev/null 2>&1; then
+            echo "::error::There is no release tagged $TAG in $REPO."
+            exit 1
+          fi
+
+          # A church downloads the fixed name, and the updater reads latest.yml.
+          # Publishing without either would leave the page pointing at nothing.
+          assets="$(gh release view "$TAG" --repo "$REPO" --json assets --jq '[.assets[].name] | join(" ")')"
+          echo "Assets: $assets"
+          for required in RG-Present-Setup.exe latest.yml; do
+            case " $assets " in
+              *" $required "*) ;;
+              *)
+                echo "::error::$TAG has no $required, so publishing it would break the download page or the updater."
+                exit 1
+                ;;
+            esac
+          done
+
+          gh release edit "$TAG" --repo "$REPO" --draft=false --latest
+          echo "Published $TAG" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://kenrodgersutugi-tech.github.io/rg-present-downloads/" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Check the download link really works
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          url="https://github.com/$REPO/releases/latest/download/RG-Present-Setup.exe"
+          code="$(curl -sSL -o /dev/null -w '%{http_code}' "$url")"
+          echo "$url -> HTTP $code"
+          [ "$code" = "200" ] || { echo "::error::The download link does not work."; exit 1; }
